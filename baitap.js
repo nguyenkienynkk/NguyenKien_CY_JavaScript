@@ -121,12 +121,26 @@ const userDetails = {
     name: "John Doe",
     age: 14,
     verified: {
-        status: true,
-        date: new Date()
+        status: {
+            isVerified: true,
+            comment: "Verified"
+        },
+        date: '2022-02-02'
     }
 };
-const clonedObject = structuredClone(userDetails);
-console.log(clonedObject);
+function deepCopy(obj) {
+    if (typeof obj !== "object" || obj === null) {
+        return obj;
+    }
+    const copy = {};
+    for (const key in obj) {
+        const value = obj[key];
+        copy[key] = deepCopy(value);
+    }
+    return copy;
+}
+const cloneObject = deepCopy(userDetails);
+console.log("cloned :", cloneObject);
 
 //Cau 9
 const matrix = [
