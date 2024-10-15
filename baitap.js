@@ -174,7 +174,39 @@ let word = findLongestWord(chuoi.split(" "));
 console.log(word);
 
 //Cau 11
-const array = ['arr', 'arr', 'arr', 'uuid', 'uuid'];
+function createCounter(n) {
+    return function() {
+        return n++;
+    };
+}
+function getMostFrequentElement(array) {
+    let freqMap = {};
+    let maxFreq = 0;
+    let mostFrequentElement = null;
+    for (let item of array) {
+        freqMap[item] = (freqMap[item] || 0) + 1;
+        if (freqMap[item] > maxFreq) {
+            maxFreq = freqMap[item];
+            mostFrequentElement = item;
+        }
+    }
+    return { element: mostFrequentElement, count: maxFreq };
+}
+
+function generateCountArray(n, array) {
+    let { element, count } = getMostFrequentElement(array);
+    let counter = createCounter(n);
+    let result = [];
+    for (let i = 0; i < count; i++) {
+        result.push(counter());
+    }
+
+    return result;
+}
+
+let n1 = 15;
+let array1 = ["brr", "brr", "arr"];
+console.log(generateCountArray(n1, array1));
 //Cau 13
 console.log("->>>>>>>>>>>>");
 let isPalindrome = function (x) {
@@ -188,7 +220,7 @@ let isPalindrome = function (x) {
 };
 console.log(isPalindrome(123454321))
 console.log("->>>>>>>>>>>>");
-// Cau 14
+// Cau 15
 let isValid = function (s) {
     let stack = [];
     const matching = {
@@ -214,6 +246,28 @@ let isValid = function (s) {
 let str = "{}{}{}";
 console.log(isValid(str));
 //Cau 12
-const arrays = [[2, 4], [6]];
+const arrays = [[2, 4], [5, 6]];
 const flatten = arrays.flatMap(item => item);
-console.log(flatten);
+if (flatten.length % 2 !== 0) {
+    oop = (flatten[(flatten.length - 1) / 2]);
+    console.log("So trung vi la : ", oop)
+} else {
+    even = (flatten[(flatten.length / 2)] + flatten[(flatten.length / 2) -1]) / 2;
+    console.log("So trung vi la : ", even)
+}
+//Cau 14
+function longestCommonPrefix(strs) {
+    if (strs.length === 0) return "";
+    let prefix = strs[0]
+
+    for (let i = 1; i < strs.length; i++) {
+        while (strs[i].indexOf(prefix) !== 0) {
+            prefix = prefix.substring(0, prefix.length - 1);
+            if (prefix === "") return "";
+        }
+    }
+    return prefix;
+}
+console.log("->>>>>>>>>>")
+console.log(longestCommonPrefix(["flower", "flow", "flight"]));
+console.log("->>>>>>>>>>")
