@@ -114,7 +114,7 @@ const rray = [
 ];
 console.log(changeJson(rray));
 //Cau 7
-const nestedArray = [1, [2, [3, [4, 5,6,7,8,9]]]];
+const nestedArray = [1, [2, [3, [4, 5, 6, 7, 8, 9]]]];
 console.log(nestedArray.flat().flat().flat());
 //Cau 8
 const userDetails = {
@@ -128,6 +128,7 @@ const userDetails = {
         date: '2022-02-02'
     }
 };
+
 function deepCopy(obj) {
     if (typeof obj !== "object" || obj === null) {
         return obj;
@@ -139,14 +140,15 @@ function deepCopy(obj) {
     }
     return copy;
 }
+
 const cloneObject = deepCopy(userDetails);
 console.log("cloned :", cloneObject);
 
 //Cau 9
 const matrix = [
-    [1,2,3],
-    [4,5,6],
-    [9,10,11]
+    [1, 2, 3],
+    [4, 5, 6],
+    [9, 10, 11]
 ]
 for (let col = 0; col < matrix[0].length; col++) {
     let columnValues = [];
@@ -158,13 +160,60 @@ for (let col = 0; col < matrix[0].length; col++) {
 // Cau 10
 let chuoi = "Tập đoàn Hyosung (Hàn Quốc) dự kiến đầu tư thêm 4 tỷ USD, nâng tổng số vốn rót vào Việt Nam lên gấp đôi.\n" +
     "Tại cuộc gặp Thủ tướng Phạm Minh Chính chiều 14/10, ông Cho Hyun-joon , Chủ tịch Tập đoàn Hyosung (Hàn Quốc), khẳng định môi trường đầu tư của Việt Nam rất đáng tin cậy. Ông tin rằng Việt Nam sẽ trở thành trung tâm sản xuất của châu Á.";
+
 function findLongestWord(array) {
     let longestWord = "";
-    array.forEach(function(word) {
-        if(word.length > longestWord.length)
+    array.forEach(function (word) {
+        if (word.length > longestWord.length)
             longestWord = word;
     });
     return longestWord;
 }
+
 let word = findLongestWord(chuoi.split(" "));
 console.log(word);
+
+//Cau 11
+const array = ['arr', 'arr', 'arr', 'uuid', 'uuid'];
+//Cau 13
+console.log("->>>>>>>>>>>>");
+let isPalindrome = function (x) {
+    let reversedNum = 0;
+    let xcopy = x;
+    while (xcopy > 0) {
+        reversedNum = reversedNum * 10 + (xcopy % 10);
+        xcopy = (xcopy - (xcopy % 10)) / 10;
+    }
+    return x === reversedNum;
+};
+console.log(isPalindrome(123454321))
+console.log("->>>>>>>>>>>>");
+// Cau 14
+let isValid = function (s) {
+    let stack = [];
+    const matching = {
+        "(": ")",
+        "[": "]",
+        "{": "}"
+    }
+    for (const c of s) {
+        if (c in matching) {
+            stack.push(c);
+        } else {
+            if (!stack.length) {
+                return false;
+            }
+            let previousOpening = stack.pop();
+            if (matching[previousOpening] !== c) {
+                return false;
+            }
+        }
+    }
+    return !stack.length;
+};
+let str = "{}{}{}";
+console.log(isValid(str));
+//Cau 12
+const arrays = [[2, 4], [6]];
+const flatten = arrays.flatMap(item => item);
+console.log(flatten);
