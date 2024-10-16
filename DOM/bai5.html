@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+</head>
+<body>
+<ul id="list">
+    <li>1</li>
+    <li>2</li>
+    <li>3</li>
+    <li>4</li>
+    <li>5</li>
+    <li>6</li>
+    <li>7</li>
+    <li>10</li>
+</ul>
+<ul id="list2">
+    <li>3</li>
+    <li>4</li>
+    <li>5</li>
+    <li>8</li>
+    <li>9</li>
+    <li>10</li>
+    <li>12</li>
+</ul>
+<ul id="result"></ul>
+<button>Copy</button>
+<script>
+    const list1 = document.querySelectorAll('#list li');
+    const list2 = document.querySelectorAll('#list2 li');
+    const resultList = document.querySelector('button');
+
+    resultList.addEventListener('click', () => {
+        const result = [...list1].filter(item1 =>
+            [...list2].some(item2 => item1.innerHTML === item2.innerHTML)
+        );
+        const resultUl = document.querySelector('#result');
+        result.forEach(item => {
+            const li = document.createElement('li');
+            li.innerHTML = item.innerHTML;
+            resultUl.appendChild(li);
+        });
+    });
+</script>
+</body>
+</html>

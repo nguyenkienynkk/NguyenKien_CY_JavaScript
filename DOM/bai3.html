@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+</head>
+<body>
+<ul id="list">
+    <li>1</li>
+    <li>2</li>
+    <li>3</li>
+    <li>4</li>
+    <li>5</li>
+</ul>
+<button onclick="change()">Change</button>
+<script>
+    function change() {
+        let elements = document.querySelectorAll('li');
+        elements = [...elements];
+        elements = elements.reverse();
+        let list = document.getElementById('list');
+        list.innerHTML = '';
+        elements.forEach(element => {
+            list.appendChild(element);
+        });
+    }
+</script>
+</body>
+</html>

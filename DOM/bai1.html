@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+</head>
+<body>
+<ul id="list">
+    <li>1</li>
+    <li>2</li>
+</ul>
+<button onclick="append()">Add</button>
+<script>
+    let count = 2;
+    function append() {
+        count++;
+        const node = document.createElement("li");
+        const textNode = document.createTextNode(count);
+        node.appendChild(textNode);
+        document.querySelector("ul").appendChild(node);
+    }
+</script>
+</body>
+</html>
