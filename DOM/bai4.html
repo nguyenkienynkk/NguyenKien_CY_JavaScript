@@ -6,6 +6,22 @@
     <title>Document</title>
 </head>
 <body>
-
+<ul>
+    <li>1</li>
+    <li>2</li>
+    <li>3</li>
+    <li>4</li>
+    <li>5</li>
+</ul>
+<ul id="copy"></ul>
+<button onclick="copyList()">Copy</button>
+<script>
+    function copyList() {
+        const originalList = document.querySelector("ul:first-child");
+        const clone = originalList.cloneNode(true);
+        clone.id = "";
+        document.querySelector("#copy").appendChild(clone);
+    }
+</script>
 </body>
 </html>
