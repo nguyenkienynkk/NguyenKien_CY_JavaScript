@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+    <link rel="stylesheet" href="../bai9/bai9.css">
+</head>
+<body>
+<div class="cha">
+    <div>
+        <img id="largeImage" width="600" height="600" alt="" src="../bai9/img.png">
+    </div>
+    <div class="con">
+        <div><img src="../bai9/img.png" width="100" height="100" alt="" onclick="showLargeImage(this)"></div>
+        <div><img src="../bai9/img_1.png" width="100" height="100" alt="" onclick="showLargeImage(this)"></div>
+        <div><img src="../bai9/img_2.png" width="100" height="100" alt="" onclick="showLargeImage(this)"></div>
+        <div><img src="../bai9/img_3.png" width="100" height="100" alt="" onclick="showLargeImage(this)"></div>
+        <div><img src="../bai9/img_4.png" width="100" height="100" alt="" onclick="showLargeImage(this)"></div>
+        <div><img src="../bai9/img_5.png" width="100" height="100" alt="" onclick="showLargeImage(this)"></div>
+    </div>
+</div>
+<script>
+    function showLargeImage(element) {
+        const largeImage = document.getElementById('largeImage');
+        largeImage.src = element.src;
+    }
+</script>
+</body>
+</html>
