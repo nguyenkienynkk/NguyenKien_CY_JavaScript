@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz Application</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrapper">
+    <div class="score">Score: <span>0</span></div>
+    <div id="questions-container"></div>
+
+    <div id="score_balance">
+        <p><span>0</span> câu đúng</p>
+        <p><span>0</span> câu sai</p>
+    </div>
+
+    <div id="result_table">
+        <table>
+            <thead>
+            <tr>
+                <th>Câu hỏi</th>
+                <th>Trả lời của bạn</th>
+                <th>Đáp án đúng</th>
+                <th>Kết quả</th>
+            </tr>
+            </thead>
+            <tbody id="result_body"></tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    const questions = [
+        {
+            content: "Câu hỏi 1: Đông Lào là nước nào?",
+            answers: ["A. Việt Nam", "B. Lào", "C. Philipine", "D. Indonesia"],
+            correctAnswer: 1
+        },
+        {
+            content: "Câu hỏi 2: Tây Lào là nước nào?",
+            answers: ["A. Miến Điện", "B. Ấn Độ", "C. Nepal", "D. Thái Lan"],
+            correctAnswer: 0
+        },
+        {
+            content: "Câu hỏi 3: Nam Lào là nước nào?",
+            answers: ["A. Campuchia", "B. Malaysia", "C. Singapore", "D. Việt Nam"],
+            correctAnswer: 0
+        },
+        {
+            content: "Câu hỏi 4: Bắc Lào là nước nào?",
+            answers: ["A. Trung Quốc", "B. Hàn Quốc", "C. Nhật Bản", "D. Hoa Kỳ"],
+            correctAnswer: 0
+        },
+        {
+            content: "Câu hỏi 5: Lào có bao nhiêu tỉnh thành?",
+            answers: ["A. 14", "B. 15", "C. 16", "D. 17"],
+            correctAnswer: 1
+        },
+        {
+            content: "Câu hỏi 6: Đâu là thủ đô của Lào?",
+            answers: ["A. Hà Nội", "B. Bangkok", "C. Vientiane", "D. Phnom Penh"],
+            correctAnswer: 2
+        },
+        {
+            content: "Câu hỏi 7: Lào có biển không?",
+            answers: ["A. Có", "B. Không", "C. Có và không", "D. Không và có"],
+            correctAnswer: 1
+        },
+        {
+            content: "Câu hỏi 8: Lào có sân bay quốc tế không?",
+            answers: ["A. Có", "B. Không", "C. Có và không", "D. Không và có"],
+            correctAnswer: 0
+        },
+        {
+            content: "Câu hỏi 9: Lào có biên giới với Việt Nam không?",
+            answers: ["A. Có", "B. Không", "C. Có và không", "D. Không và có"],
+            correctAnswer: 0
+        },
+        {
+            content: "Câu hỏi 10: Thủ đô của Brueni là gì?",
+            answers: ["A. Bangkok", "B. Bandar Seri Begawan", "C. Vientiane", "D. Phnom Penh"],
+            correctAnswer: 1
+        }
+    ];
+
+    const correctAnswers = [
+        "B. Lào",
+        "A. Miến Điện",
+        "A. Campuchia",
+        "A. Trung Quốc",
+        "B. 15",
+        "C. Vientiane",
+        "B. Không",
+        "A. Có",
+        "A. Có",
+        "B. Bandar Seri Begawan"
+    ];
+
+    let correctCount = 0;
+    let wrongCount = 0;
+    let answeredQuestions = 0;
+    const userAnswers = [];
+
+    function renderQuestions() {
+        const questionsContainer = document.getElementById('questions-container');
+        questions.forEach((question, index) => {
+            const questionHTML = `
+                <div class="cau${index + 1}">
+                    <p class="question">${question.content}</p>
+                    <div class="answers">
+                        ${question.answers.map((answer, answerIndex) => `
+                            <div class="answer" onclick="result(this, ${index})">${answer}</div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            questionsContainer.innerHTML += questionHTML;
+        });
+    }
+
+    function result(element, questionIndex) {
+        const scoreElement = document.querySelector('.score span');
+        const questionElement = document.querySelector(`.cau${questionIndex + 1}`);
+        const totalQuestions = correctAnswers.length;
+        const score_balance = document.querySelector("#score_balance");
+        const correct = document.querySelector("#score_balance p:nth-of-type(1) span");
+        const failed = document.querySelector("#score_balance p:nth-of-type(2) span");
+        const resultTable = document.getElementById('result_table');
+        const resultBody = document.getElementById('result_body');
+        const userAnswer = element.innerHTML;
+        userAnswers[questionIndex] = userAnswer;
+
+        if (userAnswer === correctAnswers[questionIndex]) {
+            scoreElement.textContent = parseInt(scoreElement.textContent) + 1;
+            questionElement.style.display = 'none';
+            correctCount++;
+        } else {
+            questionElement.style.display = 'none';
+            wrongCount++;
+        }
+
+        answeredQuestions++;
+
+        if (answeredQuestions === totalQuestions) {
+            correct.textContent = correctCount;
+            failed.textContent = wrongCount;
+            score_balance.style.display = 'block';
+
+            for (let i = 0; i < correctAnswers.length; i++) {
+                const row = document.createElement('tr');
+                const questionCell = document.createElement('td');
+                questionCell.textContent = questions[i].content;
+                row.appendChild(questionCell);
+
+                const userAnswerCell = document.createElement('td');
+                userAnswerCell.textContent = userAnswers[i];
+                row.appendChild(userAnswerCell);
+
+                const correctAnswerCell = document.createElement('td');
+                correctAnswerCell.textContent = correctAnswers[i];
+                row.appendChild(correctAnswerCell);
+
+                const resultCell = document.createElement('td');
+                resultCell.textContent = userAnswers[i] === correctAnswers[i] ? 'Đúng' : 'Sai';
+                row.appendChild(resultCell);
+
+                resultBody.appendChild(row);
+            }
+            resultTable.style.display = 'block';
+        }
+    }
+
+    renderQuestions();
+</script>
+</body>
+</html>

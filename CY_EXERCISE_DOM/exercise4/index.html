@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Điền Từ</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Fill in the blank</h1>
+    <div id="questions"></div>
+    <button id="submitBtn">Trả lời</button>
+    <button id="restartBtn">Làm lại</button>
+    <div id="result"></div>
+</div>
+<script>
+    const rawText = "Thủ đô của Việt Nam là {{Hà Nội}}. Thủ đô của Nhật Bản là {{Tokyo}}. Thủ đô của Hàn Quốc là {{Seoul}}. Thủ đô của Trung Quốc là {{Bắc Kinh}}. Thủ đô của Indonesia là {{Jakarta}}. Thủ đô của Philippines là {{Manila}}. Thủ đô của Singapore là {{Singapore}}. Thủ đô của Malaysia là {{Kuala Lumpur}}. Thủ đô của Campuchia là {{Phnom Penh}}. Thủ đô của Lào là {{Vientiane}}. Thủ đô của Myanmar là {{Naypyidaw}}. Thủ đô của Thái Lan là {{Bangkok}}. Thủ đô của Ấn Độ là {{New Delhi}}. Thủ đô của Nepal là {{Kathmandu}}. Thủ đô của Bhutan là {{Thimphu}}. Thủ đô của Bangladesh là {{Dhaka}}. Thủ đô của Sri Lanka là {{Colombo}}. Thủ đô của Pakistan là {{Islamabad}}. Thủ đô của Afghanistan là {{Kabul}}. Thủ đô của Iran là {{Tehran}}. Thủ đô của Iraq là {{Baghdad}}. Thủ đô của Ả Rập Xê Út là {{Riyadh}}. Thủ đô của Qatar là {{Doha}}. Thủ đô của Kuwait là {{Kuwait City}}";
+
+    function parseData(text) {
+        const questionsArray = text.split('.').map(item => {
+            const match = item.match(/(.*)là \{\{(.*)\}\}/);
+            if (match) {
+                return {
+                    question: match[1].trim(),
+                    answer: match[2].trim()
+                };
+            }
+        }).filter(Boolean);
+
+        return questionsArray;
+    }
+
+    const capitalsData = parseData(rawText);
+
+    function renderQuestions() {
+        const questionsContainer = document.getElementById('questions');
+        const questionsMarkup = capitalsData.map((item, index) => `
+            <span class="question">
+                ${item.question}
+                <span class="indicator" id="indicator-${index}">${index + 1}</span>
+                <input type="text" id="answer-${index}" placeholder="_______________________">
+            </span>
+        `).join(' ');
+
+        questionsContainer.innerHTML = questionsMarkup;
+    }
+
+    function evaluateAnswers() {
+        capitalsData.forEach((item, index) => {
+            const userAnswer = document.getElementById(`answer-${index}`).value.trim();
+            const indicator = document.getElementById(`indicator-${index}`);
+
+            if (userAnswer.toLowerCase() === item.answer.toLowerCase()) {
+                indicator.classList.add('correct');
+                indicator.classList.remove('wrong');
+                indicator.style.backgroundColor = 'green';
+            } else {
+                indicator.classList.add('wrong');
+                indicator.classList.remove('correct');
+                indicator.style.backgroundColor = 'red';
+            }
+        });
+    }
+
+    document.getElementById('submitBtn').addEventListener('click', evaluateAnswers);
+
+    document.getElementById('restartBtn').addEventListener('click', () => {
+        location.reload();
+    });
+
+    renderQuestions();
+</script>
+</body>
+</html>

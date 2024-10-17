@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+   <link rel="stylesheet" href="../exercise1/style.css">
+</head>
+<body>
+<div class="container">
+    <h4>Chương trình máy tính bỏ túi</h4>
+    <div>
+        <label>
+            <input type="number" class="num-1" placeholder="Số 1">
+        </label><br>
+        <label>
+            <input type="number" class="num-2" placeholder="Số 2">
+        </label>
+    </div>
+    <div>
+        <span>Kết quả</span>
+        <span id="result"></span>
+    </div>
+    <div>
+        <button onclick="getResult('plus')">Cộng</button>
+        <button onclick="getResult('sub')">Trừ</button>
+        <button onclick="getResult('multiple')">Nhân</button>
+        <button onclick="getResult('divide')">Chia</button>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    function getResult(element) {
+        const num1 = parseFloat(document.querySelector('.num-1').value);
+        const num2 = parseFloat(document.querySelector('.num-2').value);
+        if (isNaN(num1) || isNaN(num2)) {
+            alert('Vui lòng nhập số!');
+            return;
+        }
+        let result = 0;
+        switch (element) {
+            case 'plus':
+                result = num1 + num2;
+                break;
+            case'sub':
+                result = num1 - num2;
+                break;
+            case'multiple':
+                result = num1 * num2;
+                break;
+            case 'divide':
+                if (num2 === 0) {
+                    alert('Chia cho 0 không thể!');
+                    return;
+                }
+                result = num1 / num2;
+                break;
+        }
+        document.getElementById('result').innerHTML = result;
+    }
+</script>
+</body>
+</html>

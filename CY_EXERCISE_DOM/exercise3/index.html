@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Quiz with OTP</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <div class="notification"></div>
+    <div class="question"></div>
+    <div class="image"></div>
+    <div class="answer"></div>
+    <div class="user-answer">
+        <form>
+            <input type="text" id="user-input" placeholder="Nhập câu trả lời của bạn...">
+            <button id="next-btn">Next</button>
+        </form>
+    </div>
+    <div id="otp-container"></div>
+    <div class="countdown"></div>
+</div>
+
+<script type="text/javascript">
+    const questions = [
+        {
+            content: 'Sông nào chảy qua Hà Nội',
+            image: 'https://upload.wikimedia.org/wikipedia/commons/b/b3/MatnuocSongHong-06112008333.JPG',
+            correctAnswer: 'Sông Hồng',
+            maxShowingCharacter: 2
+        },
+        {
+            content: 'Ai là người phát minh ra bóng đèn sợi đốt',
+            image: 'https://st.quantrimang.com/photos/image/2016/10/25/thomsa-edison-4.jpg',
+            correctAnswer: 'Edison',
+            maxShowingCharacter: 3
+        },
+        {
+            content: 'Nguời giàu nhất thế giới ',
+            image: 'https://thumbor.forbes.com/thumbor/fit-in/416x416/filters%3Aformat%28jpg%29/https%3A%2F%2Fspecials-images.forbesimg.com%2Fimageserve%2F5bb22ae84bbe6f67d2e82e05%2F0x0.jpg%3Fbackground%3D000000%26cropX1%3D560%26cropX2%3D1783%26cropY1%3D231%26cropY2%3D1455',
+            correctAnswer: 'Jeff Bezos',
+            maxShowingCharacter: 2
+        },
+        {
+            content: 'Thủ đô của Belarus',
+            image: '',
+            correctAnswer: 'Minsk',
+            maxShowingCharacter: 3
+        }
+    ];
+
+    const notification = document.querySelector('.notification');
+    const question = document.querySelector('.question');
+    const answerNode = document.querySelector('.answer');
+    const formInput = document.querySelector('.user-answer form');
+    let inputValue = document.querySelector('.user-answer form input');
+    let countdown = document.querySelector('.countdown');
+    const nextBtn = document.querySelector('#next-btn');
+    let currentIndex = 0;
+    let flipCountNumber = 0;
+
+    const flipCards = (e, count) => {
+        if (flipCountNumber === count) return;
+        flipCountNumber++;
+        e.currentTarget.classList.add('flipped');
+
+        const backFace = e.currentTarget.querySelector('.back');
+        backFace.innerText = backFace.dataset.keyword;
+    };
+
+    const initQuestion = (index) => {
+        let flipCount = questions[index].maxShowingCharacter;
+        flipCountNumber = 0;
+        answerNode.innerHTML = '';
+        inputValue.value = '';
+        notification.innerText = `Bạn được phép chọn ${questions[index].maxShowingCharacter} lần`;
+        question.innerHTML = `${questions[index].content} <br> <img width="600px" src="${questions[index].image}" />`;
+
+        let answer = questions[index].correctAnswer.split('');
+        answer.forEach(el => {
+            if (el === " ") return;
+
+            let divNode = document.createElement('div');
+            divNode.classList.add('answer-item');
+
+            let frontFace = document.createElement('div');
+            frontFace.classList.add('front');
+            frontFace.innerText = "?";
+
+            let backFace = document.createElement('div');
+            backFace.classList.add('back');
+            backFace.setAttribute('data-keyword', el);
+
+            divNode.appendChild(frontFace);
+            divNode.appendChild(backFace);
+            divNode.addEventListener('click', (e) => flipCards(e, flipCount));
+
+            answerNode.appendChild(divNode);
+        });
+    };
+
+    const revealAllAnswers = () => {
+        let listAnswer = [...answerNode.children];
+        listAnswer.forEach(node => {
+            const backFace = node.querySelector('.back');
+            const correctLetter = backFace.dataset.keyword;
+            backFace.innerText = correctLetter;
+            node.classList.add('flipped');
+        });
+    };
+
+    formInput.addEventListener('submit', function (e) {
+        e.preventDefault();
+        let trimmedInputValue = inputValue.value ? inputValue.value.replaceAll(' ', '') : '';
+        let trimmedCorrectAnswer = questions[currentIndex].correctAnswer.replaceAll(' ', '');
+
+        if (trimmedInputValue.toLowerCase() === trimmedCorrectAnswer.toLowerCase()) {
+            alert('Đúng rồi!');
+            inputValue.disabled = true
+            currentIndex++;
+            let countTime = 2;
+
+            revealAllAnswers();
+            let timer = setInterval(() => {
+                countdown.innerText = 'Bạn sẽ được chuyển đến bài tiếp theo trong ' + countTime + ' giây';
+                countTime--;
+                if (countTime < 0) {
+                    clearInterval(timer);
+                    if (currentIndex < questions.length) {
+                        initQuestion(currentIndex);
+                        countdown.innerText = '';
+                        inputValue.disabled = false;
+                    } else {
+                        notification.innerText = 'Chúc mừng bạn đã chiến thắng!';
+                        inputValue.style.display = 'none';
+                        question.innerHTML = '';
+                        nextBtn.style.display = 'none';
+                        answerNode.innerHTML = '';
+                        countdown.innerText = '';
+                    }
+                }
+            }, 1000);
+        } else {
+            alert('Sai rồi');
+        }
+    });
+    initQuestion(currentIndex);
+</script>
+</body>
+</html>
