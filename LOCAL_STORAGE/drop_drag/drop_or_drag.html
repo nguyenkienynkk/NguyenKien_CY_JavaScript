@@ -107,7 +107,7 @@
     const modal = document.getElementById('myModal');
     const modalImg = document.getElementById('img01');
     const closeModalBtn = document.querySelector('.close');
-    const validImageTypes = ['image/gif', 'image/jpeg', 'image/png', 'application/x-zip-compressed'];
+    const validImageTypes = ['image/gif', 'image/jpeg', 'image/png','image/webp', 'application/x-zip-compressed'];
 
     const zipPlaceholder = 'https://via.placeholder.com/150?text=ZIP+File'
 
@@ -136,12 +136,14 @@
         const files = ev.dataTransfer.files;
         handleFiles(files);
     });
+
     function handleFiles(files) {
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
             renderPreviewImage(file);
         }
     }
+
     function renderPreviewImage(file) {
         const fileType = file.type;
 
@@ -175,6 +177,7 @@
             );
         };
     }
+
     function removeFile(button) {
         const filePreview = button.parentElement;
         resultElement.removeChild(filePreview);
@@ -184,6 +187,7 @@
         modal.style.display = 'block';
         modalImg.src = imgElement.src;
     }
+
     closeModalBtn.onclick = function () {
         modal.style.display = "none";
     }
