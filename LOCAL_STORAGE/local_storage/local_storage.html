@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+    <link rel="stylesheet" href="./local_storage.css">
+</head>
+<body>
+<div class="container">
+    <div class="wrapper">
+        <div>
+            <div class="add_new">
+                <button id="myBtn">Add New Note</button>
+                <div id="myModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <div>
+                            <div><span>Add new note</span></div>
+                            <div>
+                                <input type="text" id="noteTitle" placeholder="Title">
+                            </div>
+                            <div>
+                                <textarea id="noteContent" placeholder="Content"></textarea>
+                            </div>
+                            <div>
+                                <button id="saveBtn" onclick="saveNote()">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="notesContainer"></div>
+    </div>
+</div>
+
+<script>
+    const modal = document.getElementById("myModal");
+    const btn = document.getElementById("myBtn");
+    const span = document.getElementsByClassName("close")[0];
+    const notesContainer = document.getElementById("notesContainer");
+    let isEditMode = false;
+    let currentEditTitle = '';
+
+    btn.onclick = function () {
+        modal.style.display = "block";
+        clearModal();
+    };
+
+    span.onclick = function () {
+        modal.style.display = "none";
+    };
+
+    window.onclick = function (event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    };
+
+    function saveNote() {
+        const title = document.getElementById("noteTitle").value.trim();
+        const content = document.getElementById("noteContent").value.trim();
+
+        if (title === "" || content === "") {
+            alert("Please enter both title and content.");
+            return;
+        }
+        if (isEditMode)
+            localStorage.removeItem(currentEditTitle);
+        localStorage.setItem(title, content);
+        modal.style.display = "none";
+        alert(isEditMode ? 'Note updated successfully!' : 'Note saved successfully!');
+        isEditMode = false;
+        currentEditTitle = '';
+
+        displayNotes();
+    }
+
+    function displayNotes() {
+        notesContainer.innerHTML = '';
+        for (let i = 0; i < localStorage.length; i++) {
+            const title = localStorage.key(i);
+            const content = localStorage.getItem(title);
+            notesContainer.innerHTML += `
+                <div class="note">
+                    <div class="note-title"><strong>${title}</strong></div>
+                    <div class="note-content">${content}</div>
+                    <div class="note-actions">
+                        <button onclick="editNote('${title}')">Edit</button>
+                        <button onclick="deleteNote('${title}')">Delete</button>
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    function editNote(title) {
+        const content = localStorage.getItem(title);
+        document.getElementById("noteTitle").value = title;
+        document.getElementById("noteContent").value = content;
+        modal.style.display = "block";
+        isEditMode = true;
+        currentEditTitle = title;
+    }
+
+    function deleteNote(title) {
+        localStorage.removeItem(title);
+        alert('Note deleted successfully!');
+        displayNotes();
+    }
+
+    function clearModal() {
+        document.getElementById("noteTitle").value = '';
+        document.getElementById("noteContent").value = '';
+        isEditMode = false;
+        currentEditTitle = '';
+    }
+    window.onload = function () {
+        displayNotes();
+    };
+</script>
+</body>
+</html>
