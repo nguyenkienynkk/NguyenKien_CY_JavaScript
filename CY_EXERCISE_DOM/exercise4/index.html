@@ -19,7 +19,7 @@
 
     function parseData(text) {
         return text.split('.').map(item => {
-            const match = item.match(/(.*)là \{\{(.*)}}/);
+            const match = item.match(/(.*)\{\{(.*)}}/);
             if (match) {
                 return {
                     question: match[1].trim(),
