@@ -13,22 +13,21 @@
 </head>
 <body>
 <div class="player">
-    <!-- Dashboard -->
     <div class="dashboard">
-        <!-- Header -->
         <header>
             <h4>Now playing:</h4>
             <h2>String 57th & 9th</h2>
         </header>
 
-        <!-- CD -->
         <div class="cd">
             <div class="cd-thumb">
                 <img class="thumb_img" src="" alt="">
             </div>
         </div>
-        <!-- Control -->
         <div class="control">
+            <div class="btn btn-repeat">
+                <i class="fas fa-redo"></i>
+            </div>
             <div class="btn btn-prev">
                 <i class="fas fa-step-backward"></i>
             </div>
@@ -38,6 +37,9 @@
             </div>
             <div class="btn btn-next">
                 <i class="fas fa-step-forward"></i>
+            </div>
+            <div class="btn btn-random">
+                <i class="fas fa-random"></i>
             </div>
         </div>
 
@@ -50,10 +52,31 @@
         <audio id="audio" src=""></audio>
     </div>
 
-    <!-- Playlist -->
-    <div class="playlist">
-    </div>
+    <div class="playlist"></div>
     <button>Upload video</button>
+    <div id="upload_modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add New Song</h2>
+            <form id="upload_form">
+                <label for="songName">Song Name:</label>
+                <input type="text" id="songName" name="songName" required>
+
+                <label for="singer">Singer:</label>
+                <input type="text" id="singer" name="singer" required>
+
+                <label for="fileUpload">Upload MP3 File:</label>
+                <input type="file" id="fileUpload" name="fileUpload" accept="audio/*" required>
+
+                <label for="imageUpload">Upload Image File:</label>
+                <input type="file" id="imageUpload" name="imageUpload" accept="image/*" required>
+
+                <button type="submit">Add Song</button>
+            </form>
+        </div>
+    </div>
+
+
 </div>
 <script>
     const songs = [
@@ -82,7 +105,6 @@
     const playList = document.querySelector('.playlist');
     const currentTimeEl = document.getElementById('current-time');
     const durationTimeEl = document.getElementById('duration-time');
-    const buttonUpload = document.querySelector('button')
     let isPlaying = false;
     let currentIndex = 0;
 
@@ -92,7 +114,6 @@
         cdThumbImg.src = song.image;
         audio.play();
         displaySongInfo(song);
-
         document.querySelector('.cd-thumb').style.animationPlayState = 'running';
     }
 
@@ -138,34 +159,52 @@
         }, 300);
     }
 
-    audio.onplay = function () {
-        isPlaying = true;
-        iconPlay.style.display = 'none';
-        iconPause.style.display = 'inline-block';
-    };
+    const audioState = new Proxy(
+        {
+            isPlaying: false
+        },
+        {
+            set(target, key, value) {
+                if (key === 'isPlaying') {
+                    target[key] = value;
+                    if (value) {
+                        audio.play();
+                        iconPlay.style.display = 'none';
+                        iconPause.style.display = 'inline-block';
+                    } else {
+                        audio.pause();
+                        iconPause.style.display = 'none';
+                        iconPlay.style.display = 'inline-block';
+                    }
+                }
+                return true;
+            }
+        }
+    );
 
-    audio.onpause = function () {
-        isPlaying = false;
-        iconPause.style.display = 'none';
-        iconPlay.style.display = 'inline-block';
-    };
+    function highlightCurrentSong() {
+        const allSongs = document.querySelectorAll('.song');
+        allSongs.forEach(song => song.classList.remove('active'));
+        const currentSong = document.querySelector(`.song[data-index="${currentIndex}"]`);
+        currentSong.classList.add('active');
+    }
 
     playBtn.addEventListener('click', function () {
-        isPlaying ? audio.pause() : audio.play();
+        audioState.isPlaying = !audioState.isPlaying;
     });
 
     nextBtn.addEventListener('click', function () {
         currentIndex++;
-        if (currentIndex > songs.length - 1)
-            currentIndex = 0;
+        if (currentIndex > songs.length - 1) currentIndex = 0;
         playSong(currentIndex);
+        highlightCurrentSong();
     });
 
     prevBtn.addEventListener('click', function () {
         currentIndex--;
-        if (currentIndex < 0)
-            currentIndex = songs.length - 1;
+        if (currentIndex < 0) currentIndex = songs.length - 1;
         playSong(currentIndex);
+        highlightCurrentSong();
     });
 
     playSong(0);
@@ -173,26 +212,73 @@
     function listMusic() {
         songs.forEach((song, index) => {
             const item = document.createElement('div');
+            item.classList.add('song');
+            item.setAttribute('data-index', index);
             item.innerHTML = `
-              <div class="song" data-index="${index}">
-                  <div class="thumb" style="background-image: url('${song.image}')"></div>
-                  <div class="body">
-                      <h3 class="title">${song.name}</h3>
-                      <p class="author">${song.singer}</p>
-                  </div>
-                  <div class="option">
-                      <i class="fas fa-ellipsis-h"></i>
-                  </div>
-              </div>`;
+              <div class="thumb" style="background-image: url('${song.image}')"></div>
+              <div class="body">
+                  <h3 class="title">${song.name}</h3>
+                  <p class="author">${song.singer}</p>
+              </div>
+            `;
+
             playList.appendChild(item);
 
             item.addEventListener('click', () => {
+                const allSongs = document.querySelectorAll('.song');
+                allSongs.forEach(song => song.classList.remove('active'));
+
+                item.classList.add('active');
+
                 playSong(index);
             });
         });
     }
 
     listMusic();
+    const modal = document.getElementById('upload_modal');
+    const uploadBtn = document.querySelector('button');
+    const closeBtn = document.querySelector('.close');
+    const uploadForm = document.getElementById('upload_form');
+
+    uploadBtn.addEventListener('click', () => {
+        modal.style.display = 'block';
+    });
+
+    closeBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+    uploadForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const newSongName = document.getElementById('songName').value;
+        const newSinger = document.getElementById('singer').value;
+        const mp3File = document.getElementById('fileUpload').files[0];
+        const imageFile = document.getElementById('imageUpload').files[0];
+
+        const audioURL = URL.createObjectURL(mp3File);
+        const imageURL = URL.createObjectURL(imageFile);
+
+        const newSong = {
+            name: newSongName,
+            singer: newSinger,
+            path: audioURL,
+            image: imageURL
+        };
+        songs.push(newSong);
+        playList.innerHTML = '';
+        listMusic();
+        modal.style.display = 'none';
+        uploadForm.reset();
+    });
+
+
 </script>
 </body>
 </html>
