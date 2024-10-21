@@ -45,7 +45,9 @@
 
         <div class="time-display">
             <span id="current-time">00:00</span>
-            <input id="progress" class="progress" type="range" value="0" step="1" min="0" max="100">
+            <div id="progress-container">
+                <div id="progress-bar"></div>
+            </div>
             <span id="duration-time">00:00</span>
         </div>
 
@@ -76,7 +78,6 @@
         </div>
     </div>
 
-
 </div>
 <script>
     const songs = [
@@ -101,10 +102,11 @@
     const iconPause = document.querySelector('.icon-pause');
     const nextBtn = document.querySelector('.btn-next');
     const prevBtn = document.querySelector('.btn-prev');
-    const progress = document.getElementById('progress');
     const playList = document.querySelector('.playlist');
     const currentTimeEl = document.getElementById('current-time');
     const durationTimeEl = document.getElementById('duration-time');
+    const progressContainer = document.getElementById('progress-container');
+    const progressBar = document.getElementById('progress-bar');
     let isPlaying = false;
     let currentIndex = 0;
 
@@ -119,10 +121,17 @@
 
     audio.ontimeupdate = function () {
         if (audio.duration) {
-            progress.value = Math.floor((audio.currentTime / audio.duration) * 100);
+            const progressPercent = Math.floor((audio.currentTime / audio.duration) * 100);
+            progressBar.style.width = `${progressPercent}%`;
             updateTimeDisplay();
         }
     };
+    progressContainer.addEventListener('click', function (e) {
+        const width = this.clientWidth;
+        const clickX = e.offsetX;
+        const duration = audio.duration;
+        audio.currentTime = (clickX / width) * duration;
+    });
 
     function formatTime(seconds) {
         const minutes = Math.floor(seconds / 60);
@@ -137,11 +146,6 @@
 
     audio.onloadedmetadata = function () {
         durationTimeEl.textContent = formatTime(audio.duration);
-    };
-
-    progress.oninput = function (e) {
-        audio.currentTime = (audio.duration / 100) * e.target.value;
-        updateTimeDisplay();
     };
 
     function displaySongInfo(song) {
@@ -198,6 +202,7 @@
         if (currentIndex > songs.length - 1) currentIndex = 0;
         playSong(currentIndex);
         highlightCurrentSong();
+        audioState.isPlaying = !audioState.isPlaying;
     });
 
     prevBtn.addEventListener('click', function () {
@@ -205,6 +210,7 @@
         if (currentIndex < 0) currentIndex = songs.length - 1;
         playSong(currentIndex);
         highlightCurrentSong();
+        audioState.isPlaying = !audioState.isPlaying;
     });
 
     playSong(0);
@@ -223,7 +229,7 @@
             `;
 
             playList.appendChild(item);
-
+            if (index === 0) item.classList.add('active');
             item.addEventListener('click', () => {
                 const allSongs = document.querySelectorAll('.song');
                 allSongs.forEach(song => song.classList.remove('active'));
@@ -250,9 +256,8 @@
     });
 
     window.addEventListener('click', (event) => {
-        if (event.target === modal) {
+        if (event.target === modal)
             modal.style.display = 'none';
-        }
     });
 
     uploadForm.addEventListener('submit', (e) => {
@@ -277,7 +282,6 @@
         modal.style.display = 'none';
         uploadForm.reset();
     });
-
 
 </script>
 </body>
