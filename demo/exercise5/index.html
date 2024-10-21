@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+</head>
+<body>
+<!--DRAG DROP UPLOAD IMAGE-->
+<div class="drag-drop-file-upload"
+     ondragover="onDragOver(event)"
+     ondragleave="onDragLeave(event)"
+     ondrop="onDrop(event)"
+>
+    <input type="file" multiple onchange="onChange(event)" class="drag-drop-file-upload__file"/>
+    <p class="drag-drop-file-upload__hint">Drag and Drop File here to upload</p>
+
+    <div class="drag-drop-file-upload__previews">
+
+    </div>
+</div>
+
+
+<script>
+    const fileList = new Proxy({
+        value: []
+    }, {
+        set(target, key, value) {
+            target[key] = value;
+            //write file list into preview
+            const previewNode = document.querySelector('.drag-drop-file-upload__previews');
+            previewNode.innerHTML = '';
+            Array.from(value).forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    let src = 'https://via.placeholder.com/150';
+                    const alt = file.name;
+                    //check if is img
+                    if (file.type.includes('image')) {
+                        src = e.target?.result;
+                    }
+                    previewNode.innerHTML += `
+<div class="drag-drop-file-upload__preview-image">
+<img src="${src}" alt="${alt}" class="drag-drop-file-upload__preview-image"/>
+<p class="drag-drop-file-upload__preview-image-name">${alt}</p>
+<button class="drag-drop-file-upload__preview-btn-delete-file" onclick="removeFile(${index})">x</button>
+</div>
+`;
+                };
+                reader.readAsDataURL(file);
+            });
+            //check if value > 0 then hide the hint
+            if (value.length > 0) {
+                document.querySelector('.drag-drop-file-upload__hint').style.display = 'none';
+            } else {
+                document.querySelector('.drag-drop-file-upload__hint').style.display = 'block';
+            }
+            return true;
+        },
+        get(target, p, receiver) {
+            return target[p];
+        }
+    });
+
+    const isDragging = new Proxy({
+        value: false
+    }, {
+        set(target, key, value) {
+            target[key] = value;
+            if (value) {
+                document.querySelector('.drag-drop-file-upload').classList.add('drag-drop-file-upload--dragging');
+            } else {
+                document.querySelector('.drag-drop-file-upload').classList.remove('drag-drop-file-upload--dragging');
+            }
+            return true;
+        },
+        get(target, p, receiver) {
+            return target[p];
+        }
+    });
+
+
+    function onDragOver(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        isDragging.value = true;
+    }
+
+    function onDragLeave(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        isDragging.value = false;
+    }
+
+    function onDrop(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        isDragging.value = false;
+        fileList.value = [...fileList.value, ...event.dataTransfer.files];
+        console.log(fileList.value);
+
+    }
+
+
+    function onChange(event) {
+        const files = event.target.files;
+        fileList.value = [...fileList.value, ...files];
+        console.log(fileList.value);
+    }
+
+    function removeFile(index) {
+        fileList.value = fileList.value.filter((file, i) => i !== index);
+    }
+
+
+</script>
+
+<style>
+    .drag-drop-file-upload {
+        border: 1px dashed #cdcdcd;
+        position: relative;
+        width: 800px;
+        margin: 0 auto;
+        padding: 60px;
+    }
+
+    .drag-drop-file-upload__file {
+        opacity: 0;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+    }
+
+    .drag-drop-file-upload__hint {
+        text-align: center;
+    }
+
+    .drag-drop-file-upload--dragging {
+        border: 1px solid #144cb3;
+    }
+
+    .drag-drop-file-upload__previews {
+        display: flex;
+        flex-wrap: wrap;
+        row-gap: 80px;
+    }
+
+    .drag-drop-file-upload__preview-image {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        margin: 5px;
+        position: relative;
+    }
+
+    .drag-drop-file-upload__preview-image-name {
+        white-space: nowrap; /* Prevents text from wrapping to the next line */
+        overflow: hidden; /* Hides the overflowed text */
+        text-overflow: ellipsis; /* Adds the ellipsis (...) */
+        width: 150px; /* Set a fixed width for the element */
+    }
+
+    .drag-drop-file-upload__preview-btn-delete-file {
+        margin: 5px;
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 30px;
+        height: 30px;
+        border: none;
+        outline: none;
+        background: white;
+        cursor: pointer;
+    }
+</style>
+</body>
+</html>`

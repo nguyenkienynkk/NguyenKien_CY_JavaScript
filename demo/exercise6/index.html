@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="style.css"/>
+    <link rel="stylesheet" href="../../dom_2/game/exersite1/styles.css">
+    <script src="../../dom_2/game/exersite1/script.js"></script>
+</head>
+<body>
+<div class="note-app">
+    <button class="note-app__btn-add-new-note" onclick="showModalAddNewNote()">Add New Note</button>
+    <ul class="note-app__list-note">
+
+    </ul>
+
+    <div class="note-app__modal-add-new-note">
+        <div class="note-app__modal-backdrop" onclick="hideModalAddNewNote()"></div>
+        <div class="note-app__modal-content">
+            <h2>Add New Note</h2>
+            <form onsubmit="saveNote(event)" class="note-app__modal-content-form">
+                <input type="text" class="note-app__input-title">
+                <textarea
+                          class="note-app__input-content"
+                          name="content" cols="30" rows="10"
+                ></textarea>
+                <br>
+                <br>
+                <button type="submit" class="note-app__modal-content-btn-save">Save</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="main.js"></script>
+</body>
+</html>

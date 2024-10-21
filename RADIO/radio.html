@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
+          integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w=="
+          crossorigin="anonymous"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="./radio.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="player">
+    <!-- Dashboard -->
+    <div class="dashboard">
+        <!-- Header -->
+        <header>
+            <h4>Now playing:</h4>
+            <h2>String 57th & 9th</h2>
+        </header>
+
+        <!-- CD -->
+        <div class="cd">
+            <div class="cd-thumb">
+                <img class="thumb_img" src="" alt="">
+            </div>
+        </div>
+        <!-- Control -->
+        <div class="control">
+            <div class="btn btn-prev">
+                <i class="fas fa-step-backward"></i>
+            </div>
+            <div class="btn btn-toggle-play">
+                <i class="fas fa-pause icon-pause"></i>
+                <i class="fas fa-play icon-play"></i>
+            </div>
+            <div class="btn btn-next">
+                <i class="fas fa-step-forward"></i>
+            </div>
+        </div>
+
+        <div class="time-display">
+            <span id="current-time">00:00</span>
+            <input id="progress" class="progress" type="range" value="0" step="1" min="0" max="100">
+            <span id="duration-time">00:00</span>
+        </div>
+
+        <audio id="audio" src=""></audio>
+    </div>
+
+    <!-- Playlist -->
+    <div class="playlist">
+    </div>
+    <button>Upload video</button>
+</div>
+<script>
+    const songs = [
+        {
+            name: "Bầu trời mới",
+            singer: "Raftaar x Fortnite",
+            path: "./mp3/BauTroiMoi-DaLABMinhTocLam-16286137.mp3",
+            image: "image/img.png"
+        },
+        {
+            name: "Điều Anh Mong",
+            singer: "Raftaar x Salim Merchant x Karma",
+            path: "./mp3/DieuAnhMong-Czee-16035892.mp3",
+            image: "image/img_1.png"
+        }
+    ];
+
+    const cdThumbImg = document.querySelector('.thumb_img');
+    const audio = document.getElementById('audio');
+    const playBtn = document.querySelector('.btn-toggle-play');
+    const iconPlay = document.querySelector('.icon-play');
+    const iconPause = document.querySelector('.icon-pause');
+    const nextBtn = document.querySelector('.btn-next');
+    const prevBtn = document.querySelector('.btn-prev');
+    const progress = document.getElementById('progress');
+    const playList = document.querySelector('.playlist');
+    const currentTimeEl = document.getElementById('current-time');
+    const durationTimeEl = document.getElementById('duration-time');
+    const buttonUpload = document.querySelector('button')
+    let isPlaying = false;
+    let currentIndex = 0;
+
+    function playSong(index) {
+        const song = songs[index];
+        audio.src = song.path;
+        cdThumbImg.src = song.image;
+        audio.play();
+        displaySongInfo(song);
+
+        document.querySelector('.cd-thumb').style.animationPlayState = 'running';
+    }
+
+    audio.ontimeupdate = function () {
+        if (audio.duration) {
+            progress.value = Math.floor((audio.currentTime / audio.duration) * 100);
+            updateTimeDisplay();
+        }
+    };
+
+    function formatTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+
+    function updateTimeDisplay() {
+        currentTimeEl.textContent = formatTime(audio.currentTime);
+        durationTimeEl.textContent = formatTime(audio.duration);
+    }
+
+    audio.onloadedmetadata = function () {
+        durationTimeEl.textContent = formatTime(audio.duration);
+    };
+
+    progress.oninput = function (e) {
+        audio.currentTime = (audio.duration / 100) * e.target.value;
+        updateTimeDisplay();
+    };
+
+    function displaySongInfo(song) {
+        const songTitle = document.querySelector('header h2');
+        const songSinger = document.querySelector('header h4');
+
+        songTitle.classList.add('fade');
+        songSinger.classList.add('fade');
+
+        setTimeout(() => {
+            songTitle.textContent = song.name;
+            songSinger.textContent = song.singer;
+            songTitle.classList.remove('fade');
+            songSinger.classList.remove('fade');
+        }, 300);
+    }
+
+    audio.onplay = function () {
+        isPlaying = true;
+        iconPlay.style.display = 'none';
+        iconPause.style.display = 'inline-block';
+    };
+
+    audio.onpause = function () {
+        isPlaying = false;
+        iconPause.style.display = 'none';
+        iconPlay.style.display = 'inline-block';
+    };
+
+    playBtn.addEventListener('click', function () {
+        isPlaying ? audio.pause() : audio.play();
+    });
+
+    nextBtn.addEventListener('click', function () {
+        currentIndex++;
+        if (currentIndex > songs.length - 1)
+            currentIndex = 0;
+        playSong(currentIndex);
+    });
+
+    prevBtn.addEventListener('click', function () {
+        currentIndex--;
+        if (currentIndex < 0)
+            currentIndex = songs.length - 1;
+        playSong(currentIndex);
+    });
+
+    playSong(0);
+
+    function listMusic() {
+        songs.forEach((song, index) => {
+            const item = document.createElement('div');
+            item.innerHTML = `
+              <div class="song" data-index="${index}">
+                  <div class="thumb" style="background-image: url('${song.image}')"></div>
+                  <div class="body">
+                      <h3 class="title">${song.name}</h3>
+                      <p class="author">${song.singer}</p>
+                  </div>
+                  <div class="option">
+                      <i class="fas fa-ellipsis-h"></i>
+                  </div>
+              </div>`;
+            playList.appendChild(item);
+
+            item.addEventListener('click', () => {
+                playSong(index);
+            });
+        });
+    }
+
+    listMusic();
+</script>
+</body>
+</html>

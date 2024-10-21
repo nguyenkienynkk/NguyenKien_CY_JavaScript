@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+</head>
+<body>
+<div class="content"></div>
+
+<button class="submit-answer-button">Trả lời</button>
+<button class="reset-answer-button">Làm lại</button>
+</body>
+
+
+<script>
+    const contentNode = document.querySelector('.content');
+    const content = `Thủ đô của Việt Nam là {{Hà Nội}}. Thủ đô của Nhật Bản là {{Tokyo}}. Thủ đô của Hàn Quốc là {{Seoul}}. Thủ đô của Trung Quốc là {{Bắc Kinh}}. Thủ đô của Indonesia là {{Jakarta}}. Thủ đô của Philippines là {{Manila}}. Thủ đô của Singapore là {{Singapore}}. Thủ đô của Malaysia là {{Kuala Lumpur}}.
+    Thủ đô của Campuchia là {{Phnom Penh}}.
+    Thủ đô của Lào là {{Vientiane}}.
+    Thủ đô của Myanmar là {{Naypyidaw}}.
+    Thủ đô của Thái Lan là {{Bangkok}}.
+    Thủ đô của Ấn Độ là {{New Delhi}}. Thủ đô của Nepal là {{Kathmandu}}.
+    Thủ đô của Bhutan là {{Thimphu}}.
+    Thủ đô của Bangladesh là {{Dhaka}}. Thủ đô của Sri Lanka là {{Colombo}}. Thủ đô của Pakistan là {{Islamabad}}. Thủ đô của Afghanistan là {{Kabul}}. Thủ đô của Iran là {{Tehran}}. Thủ đô của Iraq là {{Baghdad}}. Thủ đô của Ả Rập Xê Út là {{Riyadh}}. Thủ đô của Qatar là {{Doha}}.
+    Thủ đô của Kuwait là {{Kuwait City}}`
+    //Tìm và thay thế các đoan text trong dấu {{}} thành thẻ input type text
+    const regex = /{{(.*?)}}/g;
+    const newContent = content.replace(regex, (match, p1, offset, string) => {
+        const questionNumber = (string.substring(0, offset).match(regex) || []).length + 1;
+        return `<span class="indicator">${questionNumber}</span><input type="text">`;
+    });
+    contentNode.innerHTML = newContent;
+
+    const submitAnswerButton = document.querySelector('.submit-answer-button');
+    const resetAnswerButton = document.querySelector('.reset-answer-button');
+
+    //get answers
+    const answers = content.match(regex).map(answer => answer.replace('{{', '').replace('}}', ''));
+    submitAnswerButton.addEventListener('click', function () {
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            const value = input.value;
+            //compare value with the correct answer
+            const index = Array.from(inputs).indexOf(input);
+            if (value === answers[index]) {
+                input.style.borderBottom = '1px solid green';
+                //change background of indicator to green
+                const indicator = input.previousElementSibling;
+                indicator.style.background = 'green';
+            } else {
+                input.style.borderBottom = '1px solid red';
+                //change background of indicator to red
+                const indicator = input.previousElementSibling;
+                indicator.style.background = 'red';
+                //show correct answer
+                //set width to fit the content
+                if (answers[index].length > input.value.length) {
+                    input.style.width = answers[index].length + 'ch';
+                } else {
+                    input.style.width = '100px';
+                }
+            }
+            //disable input
+            input.disabled = true;
+        });
+    });
+
+    //allow input resize to fit the content
+    document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('input', function () {
+            this.style.width = this.value.length + 'ch';
+        });
+    });
+
+    resetAnswerButton.addEventListener('click', function () {
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.style.borderBottom = '1px dashed #000';
+            input.disabled = false;
+            input.value = '';
+            const indicator = input.previousElementSibling;
+            indicator.style.background = '#144cb3';
+        });
+    });
+
+</script>
+<style>
+    .indicator {
+        background: #144cb3;
+        border-radius: 999px;
+        color: white;
+        width: 25px;
+        height: 20px;
+        font-weight: 600;
+        font-size: 14px;
+        display: inline-block;
+        text-align: center;
+        padding-top: 5px
+    }
+
+    input {
+        height: 20px;
+        margin-left: 10px;
+        border: none;
+        /*remove outline*/
+        outline: none;
+        border-bottom: 1px dashed #000;
+        min-width: 10px;
+    }
+</style>
+
+</html>
