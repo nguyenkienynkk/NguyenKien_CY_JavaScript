@@ -1,0 +1,76 @@
+.container {
+    width: 100%;
+    background: #000070;
+    background: -webkit-linear-gradient(43deg, #000070 0%, #47ffd4 100%);
+    background: linear-gradient(43deg, #000070 0%, #47ffd4 100%);
+}
+
+.content {
+    max-width: 1170px;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    height: 100vh;
+}
+
+.ball {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    background-image: url('image/anhlua1-removebg-preview.png');
+    background-size: cover;
+    border-radius: 50%;
+    top: 1%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: white;
+}
+
+.rack {
+    position: fixed;
+    width: 100px;
+    height: 150px;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.score {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 100px;
+    height: 100px;
+    font-size: 24px;
+    background: #ba6d6d;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, background 0.3s ease;
+    opacity: 0;
+    animation: fadeIn 0.5s forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+.score:hover {
+    transform: scale(1.1);
+    background: #ff4d00;
+}
+
+.lose {
+    display: none;
+    font-size: 36px;
+    color: red;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%)
+}

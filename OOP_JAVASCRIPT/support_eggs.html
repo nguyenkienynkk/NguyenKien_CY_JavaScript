@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+    <link rel="stylesheet" href="support_eggs.css">
+</head>
+<body>
+<div class="container">
+    <div class="content">
+        <img src="image/images-removebg-preview.png" class="rack" alt="Rack">
+        <div class="score">Score: 0</div>
+        <div class="lose">You lost</div>
+    </div>
+</div>
+
+<audio id="scoreSound" src="./1-efek-sound-3-220030.mp3" preload="auto"></audio>
+<audio id="loseSound" src="./nhac-tra-loi-sai-www.tiengdong.com.mp3" preload="auto"></audio>
+
+<script>
+    const rack = document.querySelector('.rack');
+    const score = document.querySelector('.score');
+    const lose = document.querySelector('.lose');
+    let scoreValue = 0;
+    let gameActive = true;
+    let isRemoved = 0;
+    const balls = [];
+
+    const scoreSound = document.getElementById('scoreSound');
+    const loseSound = document.getElementById('loseSound');
+
+    function isClientRect(ball, rack) {
+        const ballRect = ball.getBoundingClientRect();
+        const rackRect = rack.getBoundingClientRect();
+        return !(ballRect.left > rackRect.right ||
+            ballRect.right < rackRect.left ||
+            ballRect.top > rackRect.bottom ||
+            ballRect.bottom < rackRect.top);
+    }
+
+    function moveBalls() {
+        if (!gameActive) return;
+        balls.forEach((ball, index) => {
+            if (isClientRect(ball, rack)) {
+                ball.remove();
+                balls.splice(index, 1);
+                createBall();
+                scoreValue++;
+                score.textContent = "Score: " + scoreValue;
+                scoreSound.play();
+            } else {
+                let currentTop = parseInt(window.getComputedStyle(ball).top);
+                if (currentTop > window.innerHeight - 50) {
+                    ball.remove();
+                    balls.splice(index, 1);
+                    createBall();
+                    isRemoved++;
+                    if (isRemoved === 5) {
+                        endGame();
+                    }
+                } else {
+                    ball.style.top = `${currentTop + 1}px`;
+                }
+            }
+        });
+    }
+
+    function createBall() {
+        const newBall = document.createElement('div');
+        newBall.className = 'ball';
+        newBall.textContent = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+        newBall.style.left = `${Math.random() * (window.innerWidth - 50)}px`;
+        newBall.style.top = '0px';
+        document.body.appendChild(newBall);
+        balls.push(newBall);
+    }
+
+    function initBalls(num) {
+        for (let i = 0; i < num; i++) {
+            createBall();
+        }
+    }
+
+    function moveBallUp() {
+        if (!gameActive) return;
+        moveBalls();
+    }
+
+    setInterval(moveBallUp, 10);
+
+    document.addEventListener('keydown', function (event) {
+        if (!gameActive) return;
+        let rackLeft = parseInt(window.getComputedStyle(rack).left);
+        let rackWidth = parseInt(window.getComputedStyle(rack).width);
+        balls.forEach(ball => {
+            let ballLeft = parseInt(window.getComputedStyle(ball).left);
+            let ballWidth = parseInt(window.getComputedStyle(ball).width);
+            if (event.key.toLocaleUpperCase() === ball.textContent) {
+                rack.style.left = `${ballLeft + ballWidth / 2 - rackWidth / 2}px`;
+            }
+        });
+        if (event.key === 'ArrowLeft') {
+            if (rackLeft > 0) rack.style.left = `${rackLeft - 30}px`;
+        } else if (event.key === 'ArrowRight') {
+            if (rackLeft < window.innerWidth - rackWidth) rack.style.left = `${rackLeft + 30}px`;
+        }
+    });
+
+    function endGame() {
+        gameActive = false;
+        lose.style.display = 'block';
+        loseSound.play();
+    }
+
+    initBalls(5);
+</script>
+</body>
+</html>

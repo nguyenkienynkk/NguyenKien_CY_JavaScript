@@ -79,210 +79,211 @@
     </div>
 
 </div>
-<script>
-    const songs = [
-        {
-            name: "Bầu trời mới",
-            singer: "Raftaar x Fortnite",
-            path: "./mp3/BauTroiMoi-DaLABMinhTocLam-16286137.mp3",
-            image: "image/img.png"
-        },
-        {
-            name: "Điều Anh Mong",
-            singer: "Raftaar x Salim Merchant x Karma",
-            path: "./mp3/DieuAnhMong-Czee-16035892.mp3",
-            image: "image/img_1.png"
-        }
-    ];
+<script src="radio.js"></script>
+<!--<script>-->
+<!--    const songs = [-->
+<!--        {-->
+<!--            name: "Bầu trời mới",-->
+<!--            singer: "Raftaar x Fortnite",-->
+<!--            path: "./mp3/BauTroiMoi-DaLABMinhTocLam-16286137.mp3",-->
+<!--            image: "image/img.png"-->
+<!--        },-->
+<!--        {-->
+<!--            name: "Điều Anh Mong",-->
+<!--            singer: "Raftaar x Salim Merchant x Karma",-->
+<!--            path: "./mp3/DieuAnhMong-Czee-16035892.mp3",-->
+<!--            image: "image/img_1.png"-->
+<!--        }-->
+<!--    ];-->
 
-    const cdThumbImg = document.querySelector('.thumb_img');
-    const audio = document.getElementById('audio');
-    const playBtn = document.querySelector('.btn-toggle-play');
-    const iconPlay = document.querySelector('.icon-play');
-    const iconPause = document.querySelector('.icon-pause');
-    const nextBtn = document.querySelector('.btn-next');
-    const prevBtn = document.querySelector('.btn-prev');
-    const playList = document.querySelector('.playlist');
-    const currentTimeEl = document.getElementById('current-time');
-    const durationTimeEl = document.getElementById('duration-time');
-    const progressContainer = document.getElementById('progress-container');
-    const progressBar = document.getElementById('progress-bar');
-    let isPlaying = false;
-    let currentIndex = 0;
+<!--    const cdThumbImg = document.querySelector('.thumb_img');-->
+<!--    const audio = document.getElementById('audio');-->
+<!--    const playBtn = document.querySelector('.btn-toggle-play');-->
+<!--    const iconPlay = document.querySelector('.icon-play');-->
+<!--    const iconPause = document.querySelector('.icon-pause');-->
+<!--    const nextBtn = document.querySelector('.btn-next');-->
+<!--    const prevBtn = document.querySelector('.btn-prev');-->
+<!--    const playList = document.querySelector('.playlist');-->
+<!--    const currentTimeEl = document.getElementById('current-time');-->
+<!--    const durationTimeEl = document.getElementById('duration-time');-->
+<!--    const progressContainer = document.getElementById('progress-container');-->
+<!--    const progressBar = document.getElementById('progress-bar');-->
+<!--    let isPlaying = false;-->
+<!--    let currentIndex = 0;-->
 
-    function playSong(index) {
-        const song = songs[index];
-        audio.src = song.path;
-        cdThumbImg.src = song.image;
-        audio.play();
-        displaySongInfo(song);
-        document.querySelector('.cd-thumb').style.animationPlayState = 'running';
-    }
+<!--    function playSong(index) {-->
+<!--        const song = songs[index];-->
+<!--        audio.src = song.path;-->
+<!--        cdThumbImg.src = song.image;-->
+<!--        audio.play();-->
+<!--        displaySongInfo(song);-->
+<!--        document.querySelector('.cd-thumb').style.animationPlayState = 'running';-->
+<!--    }-->
 
-    audio.ontimeupdate = function () {
-        if (audio.duration) {
-            const progressPercent = Math.floor((audio.currentTime / audio.duration) * 100);
-            progressBar.style.width = `${progressPercent}%`;
-            updateTimeDisplay();
-        }
-    };
-    progressContainer.addEventListener('click', function (e) {
-        const width = this.clientWidth;
-        const clickX = e.offsetX;
-        const duration = audio.duration;
-        audio.currentTime = (clickX / width) * duration;
-    });
+<!--    audio.ontimeupdate = function () {-->
+<!--        if (audio.duration) {-->
+<!--            const progressPercent = Math.floor((audio.currentTime / audio.duration) * 100);-->
+<!--            progressBar.style.width = `${progressPercent}%`;-->
+<!--            updateTimeDisplay();-->
+<!--        }-->
+<!--    };-->
+<!--    progressContainer.addEventListener('click', function (e) {-->
+<!--        const width = this.clientWidth;-->
+<!--        const clickX = e.offsetX;-->
+<!--        const duration = audio.duration;-->
+<!--        audio.currentTime = (clickX / width) * duration;-->
+<!--    });-->
 
-    function formatTime(seconds) {
-        const minutes = Math.floor(seconds / 60);
-        const secs = Math.floor(seconds % 60);
-        return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
-    }
+<!--    function formatTime(seconds) {-->
+<!--        const minutes = Math.floor(seconds / 60);-->
+<!--        const secs = Math.floor(seconds % 60);-->
+<!--        return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;-->
+<!--    }-->
 
-    function updateTimeDisplay() {
-        currentTimeEl.textContent = formatTime(audio.currentTime);
-        durationTimeEl.textContent = formatTime(audio.duration);
-    }
+<!--    function updateTimeDisplay() {-->
+<!--        currentTimeEl.textContent = formatTime(audio.currentTime);-->
+<!--        durationTimeEl.textContent = formatTime(audio.duration);-->
+<!--    }-->
 
-    audio.onloadedmetadata = function () {
-        durationTimeEl.textContent = formatTime(audio.duration);
-    };
+<!--    audio.onloadedmetadata = function () {-->
+<!--        durationTimeEl.textContent = formatTime(audio.duration);-->
+<!--    };-->
 
-    function displaySongInfo(song) {
-        const songTitle = document.querySelector('header h2');
-        const songSinger = document.querySelector('header h4');
+<!--    function displaySongInfo(song) {-->
+<!--        const songTitle = document.querySelector('header h2');-->
+<!--        const songSinger = document.querySelector('header h4');-->
 
-        songTitle.classList.add('fade');
-        songSinger.classList.add('fade');
+<!--        songTitle.classList.add('fade');-->
+<!--        songSinger.classList.add('fade');-->
 
-        setTimeout(() => {
-            songTitle.textContent = song.name;
-            songSinger.textContent = song.singer;
-            songTitle.classList.remove('fade');
-            songSinger.classList.remove('fade');
-        }, 300);
-    }
+<!--        setTimeout(() => {-->
+<!--            songTitle.textContent = song.name;-->
+<!--            songSinger.textContent = song.singer;-->
+<!--            songTitle.classList.remove('fade');-->
+<!--            songSinger.classList.remove('fade');-->
+<!--        }, 300);-->
+<!--    }-->
 
-    const audioState = new Proxy(
-        {
-            isPlaying: false
-        },
-        {
-            set(target, key, value) {
-                if (key === 'isPlaying') {
-                    target[key] = value;
-                    if (value) {
-                        audio.play();
-                        iconPlay.style.display = 'none';
-                        iconPause.style.display = 'inline-block';
-                    } else {
-                        audio.pause();
-                        iconPause.style.display = 'none';
-                        iconPlay.style.display = 'inline-block';
-                    }
-                }
-                return true;
-            }
-        }
-    );
+<!--    const audioState = new Proxy(-->
+<!--        {-->
+<!--            isPlaying: false-->
+<!--        },-->
+<!--        {-->
+<!--            set(target, key, value) {-->
+<!--                if (key === 'isPlaying') {-->
+<!--                    target[key] = value;-->
+<!--                    if (value) {-->
+<!--                        audio.play();-->
+<!--                        iconPlay.style.display = 'none';-->
+<!--                        iconPause.style.display = 'inline-block';-->
+<!--                    } else {-->
+<!--                        audio.pause();-->
+<!--                        iconPause.style.display = 'none';-->
+<!--                        iconPlay.style.display = 'inline-block';-->
+<!--                    }-->
+<!--                }-->
+<!--                return true;-->
+<!--            }-->
+<!--        }-->
+<!--    );-->
 
-    function highlightCurrentSong() {
-        const allSongs = document.querySelectorAll('.song');
-        allSongs.forEach(song => song.classList.remove('active'));
-        const currentSong = document.querySelector(`.song[data-index="${currentIndex}"]`);
-        currentSong.classList.add('active');
-    }
+<!--    function highlightCurrentSong() {-->
+<!--        const allSongs = document.querySelectorAll('.song');-->
+<!--        allSongs.forEach(song => song.classList.remove('active'));-->
+<!--        const currentSong = document.querySelector(`.song[data-index="${currentIndex}"]`);-->
+<!--        currentSong.classList.add('active');-->
+<!--    }-->
 
-    playBtn.addEventListener('click', function () {
-        audioState.isPlaying = !audioState.isPlaying;
-    });
+<!--    playBtn.addEventListener('click', function () {-->
+<!--        audioState.isPlaying = !audioState.isPlaying;-->
+<!--    });-->
 
-    nextBtn.addEventListener('click', function () {
-        currentIndex++;
-        if (currentIndex > songs.length - 1) currentIndex = 0;
-        playSong(currentIndex);
-        highlightCurrentSong();
-        audioState.isPlaying = !audioState.isPlaying;
-    });
+<!--    nextBtn.addEventListener('click', function () {-->
+<!--        currentIndex++;-->
+<!--        if (currentIndex > songs.length - 1) currentIndex = 0;-->
+<!--        playSong(currentIndex);-->
+<!--        highlightCurrentSong();-->
+<!--        audioState.isPlaying = !audioState.isPlaying;-->
+<!--    });-->
 
-    prevBtn.addEventListener('click', function () {
-        currentIndex--;
-        if (currentIndex < 0) currentIndex = songs.length - 1;
-        playSong(currentIndex);
-        highlightCurrentSong();
-        audioState.isPlaying = !audioState.isPlaying;
-    });
+<!--    prevBtn.addEventListener('click', function () {-->
+<!--        currentIndex&#45;&#45;;-->
+<!--        if (currentIndex < 0) currentIndex = songs.length - 1;-->
+<!--        playSong(currentIndex);-->
+<!--        highlightCurrentSong();-->
+<!--        audioState.isPlaying = !audioState.isPlaying;-->
+<!--    });-->
 
-    playSong(0);
+<!--    playSong(0);-->
 
-    function listMusic() {
-        songs.forEach((song, index) => {
-            const item = document.createElement('div');
-            item.classList.add('song');
-            item.setAttribute('data-index', index);
-            item.innerHTML = `
-              <div class="thumb" style="background-image: url('${song.image}')"></div>
-              <div class="body">
-                  <h3 class="title">${song.name}</h3>
-                  <p class="author">${song.singer}</p>
-              </div>
-            `;
+<!--    function listMusic() {-->
+<!--        songs.forEach((song, index) => {-->
+<!--            const item = document.createElement('div');-->
+<!--            item.classList.add('song');-->
+<!--            item.setAttribute('data-index', index);-->
+<!--            item.innerHTML = `-->
+<!--              <div class="thumb" style="background-image: url('${song.image}')"></div>-->
+<!--              <div class="body">-->
+<!--                  <h3 class="title">${song.name}</h3>-->
+<!--                  <p class="author">${song.singer}</p>-->
+<!--              </div>-->
+<!--            `;-->
 
-            playList.appendChild(item);
-            if (index === 0) item.classList.add('active');
-            item.addEventListener('click', () => {
-                const allSongs = document.querySelectorAll('.song');
-                allSongs.forEach(song => song.classList.remove('active'));
+<!--            playList.appendChild(item);-->
+<!--            if (index === 0) item.classList.add('active');-->
+<!--            item.addEventListener('click', () => {-->
+<!--                const allSongs = document.querySelectorAll('.song');-->
+<!--                allSongs.forEach(song => song.classList.remove('active'));-->
 
-                item.classList.add('active');
+<!--                item.classList.add('active');-->
 
-                playSong(index);
-            });
-        });
-    }
+<!--                playSong(index);-->
+<!--            });-->
+<!--        });-->
+<!--    }-->
 
-    listMusic();
-    const modal = document.getElementById('upload_modal');
-    const uploadBtn = document.querySelector('button');
-    const closeBtn = document.querySelector('.close');
-    const uploadForm = document.getElementById('upload_form');
+<!--    listMusic();-->
+<!--    const modal = document.getElementById('upload_modal');-->
+<!--    const uploadBtn = document.querySelector('button');-->
+<!--    const closeBtn = document.querySelector('.close');-->
+<!--    const uploadForm = document.getElementById('upload_form');-->
 
-    uploadBtn.addEventListener('click', () => {
-        modal.style.display = 'block';
-    });
+<!--    uploadBtn.addEventListener('click', () => {-->
+<!--        modal.style.display = 'block';-->
+<!--    });-->
 
-    closeBtn.addEventListener('click', () => {
-        modal.style.display = 'none';
-    });
+<!--    closeBtn.addEventListener('click', () => {-->
+<!--        modal.style.display = 'none';-->
+<!--    });-->
 
-    window.addEventListener('click', (event) => {
-        if (event.target === modal)
-            modal.style.display = 'none';
-    });
+<!--    window.addEventListener('click', (event) => {-->
+<!--        if (event.target === modal)-->
+<!--            modal.style.display = 'none';-->
+<!--    });-->
 
-    uploadForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const newSongName = document.getElementById('songName').value;
-        const newSinger = document.getElementById('singer').value;
-        const mp3File = document.getElementById('fileUpload').files[0];
-        const imageFile = document.getElementById('imageUpload').files[0];
+<!--    uploadForm.addEventListener('submit', (e) => {-->
+<!--        e.preventDefault();-->
+<!--        const newSongName = document.getElementById('songName').value;-->
+<!--        const newSinger = document.getElementById('singer').value;-->
+<!--        const mp3File = document.getElementById('fileUpload').files[0];-->
+<!--        const imageFile = document.getElementById('imageUpload').files[0];-->
 
-        const audioURL = URL.createObjectURL(mp3File);
-        const imageURL = URL.createObjectURL(imageFile);
+<!--        const audioURL = URL.createObjectURL(mp3File);-->
+<!--        const imageURL = URL.createObjectURL(imageFile);-->
 
-        const newSong = {
-            name: newSongName,
-            singer: newSinger,
-            path: audioURL,
-            image: imageURL
-        };
-        songs.push(newSong);
-        playList.innerHTML = '';
-        listMusic();
-        modal.style.display = 'none';
-        uploadForm.reset();
-    });
+<!--        const newSong = {-->
+<!--            name: newSongName,-->
+<!--            singer: newSinger,-->
+<!--            path: audioURL,-->
+<!--            image: imageURL-->
+<!--        };-->
+<!--        songs.push(newSong);-->
+<!--        playList.innerHTML = '';-->
+<!--        listMusic();-->
+<!--        modal.style.display = 'none';-->
+<!--        uploadForm.reset();-->
+<!--    });-->
 
-</script>
+<!--</script>-->
 </body>
 </html>
